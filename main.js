@@ -31,6 +31,7 @@ function main() {
 
   console.log(BST);
   console.log(thirdLargest(BST));
+  console.log(isBalanced(BST));
 }
 
 main();
@@ -101,3 +102,68 @@ function findNextLargest(bst){
     return bst.parent;
   }
 }
+
+
+
+function isBalanced(bst) {
+  if (hasNoChildren(bst)) {
+    return true;
+  }
+  if (bst.left && bst.right) {
+    if ((hasNoChildren(bst.left) && hasGrandChildren(bst.right)) || (hasNoChildren(bst.right) && hasGrandChildren(bst.left))) {
+      return false;
+    }
+  }
+
+  if (bst.left) {
+    return isBalanced(bst.left);
+  }
+
+  return isBalanced(bst.right);
+} 
+
+function hasNoChildren(bst) {
+  return !bst.left && !bst.right;
+}
+
+function hasGrandChildren(bst) {
+  return !hasNoChildren(bst) && (!hasNoChildren(bst.left) || !hasNoChildren(bst.right));
+}
+
+function testBalance() {
+  const balanced = new BinarySearchTree();
+  balanced.insert(10, 10);
+  balanced.insert(15,15);
+  balanced.insert(17,17);
+  console.log(isBalanced(balanced));
+}
+
+testBalance();
+
+let counter = 0;
+
+function testSameBst(arr1, arr2) {
+  counter++;
+  console.log(counter);
+  if (arr1[0] !== arr2[0] || arr1.length !== arr2.length) {
+    return false;
+  }
+
+  if (arr1.length < 2 || (arr1.length === 2 && arr1[1] === arr2[1])) {
+    return true;
+  }
+
+  const right1 = arr1.filter(ele => ele > arr1[0]);
+  const right2 = arr2.filter(ele => ele > arr2[0]);
+  const left1 = arr1.filter(ele => ele < arr1[0]);
+  const left2 = arr2.filter(ele => ele < arr2[0]);
+
+  return testSameBst(right1, right2) && testSameBst(left1, left2);
+} 
+
+const testArr1 = [3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+const testArr2 = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+console.log(testSameBst(testArr1, testArr2));
+
+// this seems to be O(n^2) in worst case and O(n log n) in best case; Counting operations is O(n) or O(log n) since filter is not included
+
